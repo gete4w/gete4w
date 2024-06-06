@@ -1,0 +1,49 @@
+import com.ruoyi.common.core.controller.BaseController;
+import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.ruoyils.sy.order.domain.LsOrder;
+import com.ruoyi.ruoyils.wx.pay.service.IWxPayService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+ 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+ 
+@Slf4j
+@Api(value = "微信-支付", tags = {"微信-支付"})
+@RestController
+@RequestMapping("/ls/wx/pay")
+public class WxPayController extends BaseController {
+ 
+    @Autowired
+    private IWxPayService wxPayService;
+ 
+ 
+    /**
+     * jsapi下单
+     *
+     * @param lsOrder   订单
+     * @return
+     */
+    @ApiOperation("统一下单")
+    @PostMapping(value = "/payment")
+    public AjaxResult payment(@RequestBody LsOrder lsOrder) {
+        return wxPayService.addOrder(lsOrder);
+    }
+ 
+ 
+    /**
+     * 支付通知
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @PostMapping("/notifyUrl")
+    public AjaxResult notifyUrl(HttpServletRequest request, HttpServletResponse response) {
+        return AjaxResult.success(wxPayService.notifyUrl(request, response));
+    }
+ 
+}
