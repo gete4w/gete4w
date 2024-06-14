@@ -1,0 +1,68 @@
+ // 判断数组是否为空
+      allChecked = cart.length!=0?allChecked:false;
+      this.setData({
+        cart,totalPrice,totalNum,allChecked
+      });
+      wx.setStorageSync('cart', cart);
+    },
+    // 商品全选功能
+    handleItemCheck(){
+      // 1 获取data中的数据
+      let {cart,allChecked} = this.data;
+      // 2 修改值
+      allChecked = !allChecked;
+      // 3 循环修改cart数组中的商品选中状态
+      cart.forEach(v=>v.checked = allChecked);
+      // 4 修改后的值 填充回data或者缓存中
+      this.setCart(cart);
+    },
+    // 商品数量的编辑功能
+    async handleItemNumEdit(e){
+      // 1 获取传递过来的参数
+      const {operation,id} = e.currentTarget.dataset;
+      // 2 获取购物车数组
+      let {cart} = this.data;
+      // 3 找到需要修改的商品的索引
+      const index = cart.findIndex(v=>v.goods_id===id);
+      // 判断是否要执行删除
+      if(cart[index].num===1&&operation===-1)
+      {
+        let that=this;
+        // 弹窗提示
+        const res = await wx.showModal({
+          title: '提示',
+          content: '您是否要删除？',
+          success (res) {
+            if (res.confirm) {
+              cart.splice(index,1);
+              that.setCart(cart);
+            } else if (res.cancel) {
+              console.log('用户点击取消')
+            }
+          }
+        })
+      }else{
+        // 4 进行修改数量
+        cart[index].num+=operation;
+        // 5 设置缓存和data中
+        this.setCart(cart);
+      }
+    },
+    // 点击结算
+    async handlePay(e){
+      const {totalNum} = this.data;
+      // 1判断用户有没有选购商品
+      if(totalNum===0)
+      {
+        await wx.showModal({
+          title: '提示',
+          content:"没有选购商品"
+        })
+        return;
+      }
+      // 2跳转到支付页面
+      wx.navigateTo({
+        url: '/pages/pay/pay'
+      });
+    }
+  })
