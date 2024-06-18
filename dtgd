@@ -1,0 +1,355 @@
+# coding=utf-8
+# code by me
+ 
+# 引用海龟库以及随机库
+import turtle as t
+import random
+import time
+ 
+light = t.Turtle(visible=False)
+wind = t.Turtle(visible=False)
+ 
+ 
+def canvas(size_x=1200, size_y=900):  # 设置画布,有默认值
+    t.setup(size_x, size_y)
+ 
+ 
+# 设置线的颜色以及size
+def pencil(size=5, color="black"):
+    t.pensize(size)
+    t.pencolor(color)
+ 
+ 
+def sun():  # 绘制太阳
+    light.pensize(5)
+    light.pencolor("black")
+    sec = int(time.time())
+    t.penup()  # 画红色点
+    t.goto(-530, 310)
+    t.pendown()
+    t.dot(100, "red")
+    for i in range(1, 19):  # 阳光效果
+        light.penup()
+        light.goto(-530, 310)
+        light.seth(i * 20)
+        light.forward(55)
+        light.pendown()
+        if (i + sec) % 2 == 1:
+            light.forward(15)
+        else:
+            light.forward(7)
+ 
+ 
+def plant():  # 绘制天空以及大地
+    t.penup()  # 每个绘制函数开头都写了这个，防止龟龟绘制另外的图像移动时留下痕迹
+    length = 900 * 0.318  # 将画布的纵向黄金分割
+    t.home()
+    t.goto(600, -450)
+ 
+    t.fillcolor("#DAA520")  # 分割填充大地
+    t.begin_fill()
+    t.left(90)
+    t.forward(length)
+    t.left(90)
+    t.forward(1200)
+    t.left(90)
+    t.forward(length)
+    t.left(90)
+    t.forward(1200)
+    t.end_fill()
+ 
+    t.home()  # 填充天空
+    t.goto(600, length - 450)
+    t.fillcolor("#B0C4DE")
+    t.begin_fill()
+    t.left(90)
+    t.forward(900 - length)
+    t.left(90)
+    t.forward(1200)
+    t.left(90)
+    t.forward(900 - length)
+    t.left(90)
+    t.forward(1200)
+    t.end_fill()
+ 
+ 
+def butterfly(pos_x=0, pos_y=0):  # 绘制蝴蝶，这里会随机生成位置以及蝴蝶大小、颜色
+    light.penup()
+    light.goto(pos_x, pos_y)
+    light.pendown()
+    light.pensize(2)
+    light.seth(45)
+ 
+    color = ["#FF00FF", "#87CEFA", "#0000EE", "#FF4500", "#00FF00", "#00E5EE", "#FFFAFA"]  # 一个颜色表,以及size表
+    size = [6, 7, 8, 9, 10, 11, 12]
+    tep_size = random.choice(size)
+    light.fillcolor(random.choice(color))
+    light.begin_fill()
+    light.circle(tep_size, 270)  # 绘制翅膀
+    light.right(135)
+ 
+    light.pensize(3)
+    light.forward(tep_size / 2)
+    light.right(45)
+    light.forward(tep_size / 2)
+    light.back(tep_size / 2)
+    light.left(70)
+    light.forward(tep_size / 2)
+    light.back(tep_size / 2)
+    light.right(25)
+    light.pensize(4)
+    light.back(2.05 * tep_size)
+ 
+    light.seth(-90)
+    light.pensize(2)
+    light.circle(tep_size, -180)
+    light.pensize(4)
+    light.left(90)
+    light.forward(tep_size * 2)
+    light.back(tep_size * 2.5)
+    light.end_fill()
+ 
+ 
+def botany(pos_x=0, pos_y=0, direction=0, flower=1, bend=10):  # 植物函数，绘制向日葵，向日葵会迎风倒，效果很到位
+    light.pensize(3)
+    light.pencolor("black")
+    light.penup()
+    light.goto(pos_x, pos_y)
+    light.pendown()
+    light.left(90)
+    light.fillcolor("#00CD00")
+    light.begin_fill()
+ 
+    light.circle(50, 90)  # 绘制叶片
+    light.left(90)
+    light.circle(50, 90)
+ 
+    light.penup()
+    light.goto(pos_x, pos_y)
+    light.pendown()
+ 
+    light.seth(-90)
+    light.pensize(6)
+    light.forward(50)
+    light.back(50)
+ 
+    light.pensize(3)
+    light.circle(50, -90)
+    light.right(90)
+    light.circle(50, -90)
+    light.end_fill()
+    if flower:  # 判断是否有花，这里默认有花
+        light.penup()
+        light.goto(pos_x, pos_y)
+        light.pendown()
+        light.pensize(4)
+        if direction:
+            light.seth(80)  # 绘制秆
+            light.circle(130 - 5 * bend, 70 + 5 * bend, None)
+        else:
+            light.seth(-80)
+            light.circle(130 - 5 * bend, -70 - 5 * bend, None)
+            light.right(180)
+        tep_x, tep_y = light.xcor(), light.ycor()
+        light.forward(13)
+        light.right(30)
+        for i in range(6):  # 绘制花瓣
+            light.fillcolor("#FFD700")
+            light.begin_fill()
+            light.circle(15, 300)
+            light.left(120)
+            light.end_fill()
+        light.goto(tep_x, tep_y)
+        light.dot(36, "#FFB90F")
+ 
+ 
+def cloud(pos_x=0, pos_y=0, size=20):  # 绘制云
+    pos = int(time.time())
+    pos %= 50
+    light.penup()  # 云没有要边框，所以没有pendown
+    light.goto(pos*8+pos_x, pos_y)
+ 
+    light.fillcolor("#E6E6FA")
+    light.begin_fill()
+    light.seth(-80)
+    light.circle(size, 110)
+    for i in range(1, 6):  # 绘制下半部分
+        light.right(100)
+        light.circle(size, 110)
+    light.left(120)
+    for i in range(1, 7):  # 绘制上半部分，上边进行了六次循环，但是之前就进行了一次绘制，这里有七次循环
+        light.right(100)
+        light.circle(size, 110)
+    light.end_fill()
+ 
+ 
+# def draw(x, y):                               # 这里是之前调试用的拖拽函数响应函数，不需使用
+#     t.goto(x, y)
+#     print(t.xcor(), t.ycor())
+ 
+ 
+# def person(pos_x=0, pos_y=0):                 # 绘制人的函数，效果很拉跨，舍弃
+#     t.penup()
+#     t.goto(pos_x, pos_y)
+#     t.pendown()
+#
+#     t.dot(44, "#FFDEAD")
+#     t.right(90)
+#     t.penup()
+#     t.forward(25)
+#     t.right(15)
+#     t.pendown()
+#     pencil(10)
+#     t.forward(50)
+#
+#     t.right(35)
+#     t.forward(50)
+#     t.back(50)
+#     t.left(90)
+#     t.forward(27)
+#     t.right(110)
+#     t.forward(23)
+#
+#     t.penup()
+#     t.goto(pos_x, pos_y)
+#     t.seth(-90)
+#     t.forward(25)
+#     t.right(15)
+#     t.forward(20)
+#     t.right(60)
+#     t.pendown()
+#     t.forward(50)
+#     tep_x1, tep_y1 = t.xcor(), t.ycor()
+#     t.back(50)
+#     t.right(160)
+#     t.forward(30)
+#     t.seth(90)
+#     t.forward(20)
+#
+#     t.penup()
+#     t.goto(tep_x1, tep_y1)
+#     t.seth(-145)
+#     pencil(6)
+#     t.pendown()
+#     t.forward(50)
+#     t.right(90)
+#     t.forward(20)
+#     t.right(90)
+#     t.forward(15)
+#     t.right(90)
+#     t.forward(20)
+#     t.left(90)
+#     t.forward(150)
+ 
+ 
+def star(pos_x=0, pos_y=0, size=10):  # 绘制星星函数
+    color = ["#FFFFE0", "#FFFF00"]
+    light.penup()
+    light.goto(pos_x, pos_y)
+    angle = random.randint(0, 180)
+    light.seth(angle)
+    light.fillcolor(random.choice(color))
+    light.begin_fill()
+    for i in range(5):  # 这个144度是查的资料
+        light.right(144)
+        light.forward(size)
+    light.end_fill()
+ 
+ 
+def wind():  # 风函数，让图像看起来更有感觉，就是一条直线，加两个圆
+    pos = int(time.time())
+    pos %= 5
+    color = ["#D3D3D3", "#CDCDB4"]
+    tep_color = random.choice(color)
+    light.penup()
+    light.goto(pos*80-1000, 50)
+    light.seth(0)
+    light.pendown()
+    light.pensize(5)
+    light.pencolor(tep_color)
+    light.forward(500)
+    light.pensize(4)
+    light.pencolor(tep_color)
+    light.left(45)
+    light.circle(50, 180)
+    light.pensize(3)
+    light.pencolor(tep_color)
+    light.circle(30, 90)
+ 
+    tep_color = random.choice(color)
+    light.penup()  # 画圈圈
+    light.goto(pos*140-1040, 80)
+    light.seth(0)
+    light.pendown()
+    light.pensize(5)
+    light.pencolor(tep_color)
+    light.forward(400)
+    light.pensize(4)
+    light.pencolor(tep_color)
+    light.left(45)
+    light.circle(40, 180)
+    light.pensize(3)
+    light.pencolor(tep_color)
+    light.circle(25, 90)
+ 
+ 
+def lie():  # 这个函数是表达我对python的喜爱
+    t.penup()
+    t.goto(0, -360)
+    pencil(0, "#FFA54F")
+    t.write("节日快乐", align='center', font=('arial', 75, 'normal'))
+    t.hideturtle()
+ 
+ 
+def dynamic():
+    light.clear()
+    sun()
+    star(200, 200)  # 右上角有星星注意观察 0.0
+    star(260, 230, 15)
+    star(180, 300)
+    star(300, 100, 15)
+    star(500, 290)
+    star(420, 310, 15)
+    star(300, 200)
+    star(260, 230, 15)
+    star(350, 352)
+    star(500, 180, 15)
+    star(560, 352)
+    cloud(-530, 280, 20)
+    cloud(300, 250, 30)
+    wind()
+ 
+    bend = int(time.time())
+    bend %= 5
+    bend += 14
+    light.seth(-100-bend)  # 初始向日葵叶片角度
+    for i in range(14):  # 生成向日葵
+ 
+        if i % 2 == 0:
+            botany(-520 + i * 50, -132, 0, 1, bend - i)
+            botany(-340 + i * 50, -132, 0, 1, bend - i)
+        else:
+            botany(-430 + i * 50, -142, 0, 1, bend - i)
+            botany(-230 + i * 50, -142, 0, 1, bend - i)
+    pos_x = [45, -96, -100, 410, 300, 580, 230, -50, -400, -320, -212]
+    pos_y = [45, -96, -100, 0, 20, 30, 29, -50, -20, -43, 10]
+    for i in range(6):  # 生成蝴蝶，这里便于观察到结果，蝴蝶有点大
+        butterfly(random.choice(pos_x), random.choice(pos_y))
+    t.ontimer(dynamic, 1000)
+ 
+ 
+def piant():  # 这里是将绘制全放在这个函数里，让main看起来简洁
+    t.tracer(False)
+    t.delay(0)
+    canvas()
+    pencil()
+    plant()
+    lie()
+    dynamic()
+ 
+ 
+if __name__ == "__main__":
+    piant()
+    # t.ondrag(draw, btn=1, add=None)
+    t.mainloop()
+ 
